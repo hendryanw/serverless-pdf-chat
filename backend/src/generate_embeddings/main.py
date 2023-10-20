@@ -2,7 +2,7 @@ import os, json
 import boto3
 from aws_lambda_powertools import Logger
 from langchain.embeddings import BedrockEmbeddings
-from langchain.document_loaders import PyPDFLoader
+from langchain.document_loaders import AmazonTextractPDFLoader
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.vectorstores import FAISS
 
@@ -12,6 +12,7 @@ BUCKET = os.environ["BUCKET"]
 
 s3 = boto3.client("s3")
 ddb = boto3.resource("dynamodb")
+textract = boto3.client("textract")
 document_table = ddb.Table(DOCUMENT_TABLE)
 logger = Logger()
 
@@ -34,9 +35,8 @@ def lambda_handler(event, context):
 
     set_doc_status(user_id, document_id, "PROCESSING")
 
-    s3.download_file(BUCKET, key, f"/tmp/{file_name_full}")
-
-    loader = PyPDFLoader(f"/tmp/{file_name_full}")
+    text_features = ["FORMS", "TABLES"]
+    loader = AmazonTextractPDFLoader(f"s3://{BUCKET}/{key}", text_features, textract)
 
     bedrock_runtime = boto3.client(
         service_name="bedrock-runtime",

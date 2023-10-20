@@ -301,6 +301,7 @@ Resources:
               Effect: "Allow"
               Action: "bedrock:InvokeModel"
               Resource: "arn:aws:bedrock:*::foundation-model/amazon.titan-embed-text-v1"
+        - TextractPolicy: {}
       Environment:
         Variables:
           DOCUMENT_TABLE: !Ref DocumentTable
