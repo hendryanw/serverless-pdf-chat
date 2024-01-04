@@ -83,7 +83,7 @@ GenerateResponseFunction:
             Effect: "Allow"
             Action: "bedrock:InvokeModel"
             Resource:
-              - "arn:aws:bedrock:*::foundation-model/anthropic.claude-v2" # adjust with different model
+              - "arn:aws:bedrock:*::foundation-model/anthropic.claude-v2:1" # adjust with different model
               - "arn:aws:bedrock:*::foundation-model/amazon.titan-embed-text-v1" # adjust with different model
 ```
 
