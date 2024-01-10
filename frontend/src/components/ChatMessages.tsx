@@ -34,7 +34,9 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
               key={i}
             >
               <div className="prose">
-                <p>{message.data.content}</p>
+                <p style={{ whiteSpace: "pre-line" }}>
+                  {message.data.content}
+                </p>
               </div>
             </div>
           ))}
