@@ -64,7 +64,7 @@ def lambda_handler(event, context):
 
     qa = ConversationalRetrievalChain.from_llm(
         llm=llm,
-        retriever=faiss_index.as_retriever(),
+        retriever=faiss_index.as_retriever(search_kwargs={'k': 5}),
         memory=memory,
         return_source_documents=True,
     )

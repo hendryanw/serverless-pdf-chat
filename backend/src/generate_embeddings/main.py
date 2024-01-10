@@ -5,7 +5,7 @@ from langchain.embeddings import BedrockEmbeddings
 from langchain.document_loaders import AmazonTextractPDFLoader
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.vectorstores import FAISS
-
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 DOCUMENT_TABLE = os.environ["DOCUMENT_TABLE"]
 BUCKET = os.environ["BUCKET"]
@@ -49,9 +49,16 @@ def lambda_handler(event, context):
         region_name="us-east-1",
     )
 
+    text_splitter = RecursiveCharacterTextSplitter( #create a text splitter
+        separators=["\n\n", "\n", ".", " "], #split chunks at (1) paragraph, (2) line, (3) sentence, or (4) word, in that order
+        chunk_size=1500, #divide into 1000-character chunks using the separators above
+        chunk_overlap=100 #number of characters that can overlap with previous chunk
+    )
+
     index_creator = VectorstoreIndexCreator(
         vectorstore_cls=FAISS,
         embedding=embeddings,
+        text_splitter=text_splitter, #use the recursive text splitter
     )
 
     index_from_loader = index_creator.from_loaders([loader])
